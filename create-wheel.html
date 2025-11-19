@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Wheel - Feed My GF</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+    <style>
+        .custom-wheel-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        
+        .input-section {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            min-width: 300px;
+        }
+        
+        .wheel-section {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            min-width: 300px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: #ffd700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .items-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .item-entry {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .item-entry input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        .item-entry input:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+            background: white;
+        }
+        
+        .remove-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-btn:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+        }
+        
+        .add-btn, .back-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 10px 5px;
+        }
+        
+        .back-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .add-btn:hover, .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .wheel-wrapper {
+            position: relative;
+            display: inline-block;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+            margin: 20px 0;
+        }
+        
+        .spin-button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .spin-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+        }
+        
+        .spin-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        @media (max-width: 768px) {
+            .custom-wheel-container {
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            .input-section, .wheel-section {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-wheel-container">
+        <div class="input-section">
+            <header>
+                <h1>🎨 Custom Wheel</h1>
+                <p>Add items to create your wheel!</p>
+            </header>
+            
+            <main>
+                <div class="input-group">
+                    <label>Wheel Items</label>
+                    <div class="items-list" id="itemsList">
+                        <div class="item-entry">
+                            <input type="text" placeholder="Enter item name..." class="item-name" value="Option 1">
+                            <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                        </div>
+                        <div class="item-entry">
+                            <input type="text" placeholder="Enter item name..." class="item-name" value="Option 2">
+                            <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                        </div>
+                        <div class="item-entry">
+                            <input type="text" placeholder="Enter item name..." class="item-name" value="Option 3">
+                            <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                        </div>
+                    </div>
+                    <button class="add-btn" onclick="addItem()">+ Add Item</button>
+                    <button class="back-btn" onclick="goBack()">← Back to Restaurant Wheel</button>
+                </div>
+            </main>
+        </div>
+        
+        <div class="wheel-section">
+            <h2>🎯 Spin the Wheel</h2>
+            <div class="wheel-wrapper">
+                <div class="pointer"></div>
+                <canvas id="wheel" width="400" height="400"></canvas>
+            </div>
+            <button id="spinButton" class="spin-button">SPIN THE WHEEL!</button>
+        </div>
+    </div>
+    
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎉 Winner! 🎉</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalLogo" class="modal-logo"></div>
+                <h3 id="modalWinnerName" class="modal-restaurant-name"></h3>
+                <p class="modal-message">🎯 Perfect choice! �</p>
+            </div>
+            <div class="modal-footer">
+                <button id="spinAgainBtn" class="spin-again-btn">🔄 Spin Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="create-wheel.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do I take my gf on vacation? - Spinner</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <h2>🎯 Choose Your Wheel</h2>
+            <nav class="wheel-nav">
+                <a href="laid-wheel.html" class="nav-item">
+                    <span class="nav-icon">😏</span>
+                    <span class="nav-text">Am I getting laid?</span>
+                </a>
+                <a href="mad-wheel.html" class="nav-item">
+                    <span class="nav-icon">😠</span>
+                    <span class="nav-text">Is my gf mad at me?</span>
+                </a>
+                <a href="shopping-wheel.html" class="nav-item">
+                    <span class="nav-icon">🛍️</span>
+                    <span class="nav-text">Should I take my gf shopping?</span>
+                </a>
+                <a href="vacation-wheel.html" class="nav-item active">
+                    <span class="nav-icon">✈️</span>
+                    <span class="nav-text">Do I take my gf on vacation?</span>
+                </a>
+                <a href="create-wheel.html" class="nav-item">
+                    <span class="nav-icon">🎨</span>
+                    <span class="nav-text">Create Custom Wheel</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <div class="container">
+            <header>
+                <h1>✈️ Do I take my gf on vacation?</h1>
+                <p>Let fate decide your travel plans!</p>
+            </header>
+            
+            <main class="wheel-container">
+                <div class="wheel-wrapper">
+                    <div class="pointer"></div>
+                    <canvas id="wheel" width="400" height="400"></canvas>
+                </div>
+                
+                <button id="spinButton" class="spin-button">SPIN THE WHEEL</button>
+                
+            </main>
+        </div>
+    </div>
+    
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🌍 The Verdict! 🌍</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalLogo" class="modal-logo"></div>
+                <h3 id="modalResult" class="modal-restaurant-name"></h3>
+                <p class="modal-message" id="modalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="spinAgainBtn" class="spin-again-btn">🔄 Spin Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="vacation-wheel.js"></script>
+</body>
+</html>

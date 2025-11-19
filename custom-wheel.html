@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Custom Wheel - Feed My GF</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+    <style>
+        .custom-wheel-container {
+            text-align: center;
+            z-index: 1;
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            z-index: 100;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .wheel-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid rgba(255, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 50px auto;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .error-message h2 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+        
+        .error-message p {
+            color: #ffaaaa;
+            margin-bottom: 20px;
+        }
+        
+        .error-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        
+        .error-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="goBack()">← Back</button>
+    
+    <div class="custom-wheel-container">
+        <header>
+            <h1 class="wheel-title" id="wheelTitle">Custom Wheel</h1>
+            <p>Spin the wheel to make your choice!</p>
+        </header>
+        
+        <main id="wheelContent">
+            <div class="wheel-container">
+                <div class="wheel-wrapper">
+                    <div class="pointer"></div>
+                    <canvas id="wheel" width="400" height="400"></canvas>
+                </div>
+                <button id="spinButton" class="spin-button">SPIN THE WHEEL!</button>
+            </div>
+        </main>
+        
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <h2>⚠️ No Wheel Data Found</h2>
+            <p>Please create a custom wheel first using the wheel creator.</p>
+            <button class="error-button" onclick="goToCreator()">Create Wheel</button>
+        </div>
+    </div>
+    
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎉 Winner! 🎉</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalLogo" class="modal-logo"></div>
+                <h3 id="modalWinnerName" class="modal-restaurant-name"></h3>
+                <p class="modal-message">🎯 Perfect choice! 🎯</p>
+            </div>
+            <div class="modal-footer">
+                <button id="spinAgainBtn" class="spin-again-btn">🔄 Spin Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="custom-wheel.js"></script>
+</body>
+</html>
