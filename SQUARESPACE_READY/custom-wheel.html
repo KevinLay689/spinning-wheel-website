@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Spinning Wheel</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1558645610834958"
+         crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #764ba2;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        .segments-list {
+            margin-bottom: 20px;
+        }
+
+        .segment-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .segment-item input {
+            flex: 1;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .remove-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #ee5a24;
+        }
+
+        .add-segment-btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .add-segment-btn:hover {
+            background: #45B7D1;
+        }
+
+        .wheel-container {
+            position: relative;
+            margin: 30px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            max-width: 90vw;
+            max-height: 90vw;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ff6b6b;
+            z-index: 10;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        canvas:hover {
+            transform: scale(1.02);
+        }
+
+        .spin-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .spin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .spin-button:active {
+            transform: translateY(0);
+        }
+
+        .spin-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            border-radius: 15px;
+            color: white;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .winner {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #764ba2;
+            font-size: 1.8em;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .modal-restaurant-name {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .spin-again-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .spin-again-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .wheel-wrapper {
+                width: 300px;
+                height: 300px;
+            }
+
+            .spin-button {
+                padding: 12px 30px;
+                font-size: 1.1em;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .wheel-wrapper {
+                width: 250px;
+                height: 250px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .spin-button {
+                padding: 10px 25px;
+                font-size: 1em;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Custom Wheel</h1>
+            <p>Create your own spinning wheel!</p>
+        </header>
+        
+        <div class="input-section">
+            <div class="segments-list" id="segmentsList">
+                <div class="segment-item">
+                    <input type="text" placeholder="Enter option" value="Option 1">
+                    <input type="color" class="color-picker" value="#FF6B6B">
+                    <button class="remove-btn" onclick="removeSegment(this)">×</button>
+                </div>
+                <div class="segment-item">
+                    <input type="text" placeholder="Enter option" value="Option 2">
+                    <input type="color" class="color-picker" value="#4ECDC4">
+                    <button class="remove-btn" onclick="removeSegment(this)">×</button>
+                </div>
+                <div class="segment-item">
+                    <input type="text" placeholder="Enter option" value="Option 3">
+                    <input type="color" class="color-picker" value="#45B7D1">
+                    <button class="remove-btn" onclick="removeSegment(this)">×</button>
+                </div>
+                <div class="segment-item">
+                    <input type="text" placeholder="Enter option" value="Option 4">
+                    <input type="color" class="color-picker" value="#96CEB4">
+                    <button class="remove-btn" onclick="removeSegment(this)">×</button>
+                </div>
+            </div>
+            <button class="add-segment-btn" onclick="addSegment()">+ Add Option</button>
+        </div>
+        
+        <main class="wheel-container">
+            <div class="wheel-wrapper">
+                <div class="pointer"></div>
+                <canvas id="wheel" width="400" height="400"></canvas>
+            </div>
+            
+            <button id="spinButton" class="spin-button">SPIN THE WHEEL</button>
+            
+            <div class="result hidden" id="result">
+                <h2>🎉 Winner! 🎉</h2>
+                <div class="winner" id="winner"></div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎉 Winner! 🎉</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3 id="modalRestaurantName" class="modal-restaurant-name"></h3>
+                <p class="modal-message">🎊 Congratulations! 🎊</p>
+            </div>
+            <div class="modal-footer">
+                <button id="spinAgainBtn" class="spin-again-btn">🔄 Spin Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class CustomWheel {
+            constructor() {
+                this.canvas = document.getElementById('wheel');
+                this.ctx = this.canvas.getContext('2d');
+                this.spinButton = document.getElementById('spinButton');
+                this.result = document.getElementById('result');
+                this.winner = document.getElementById('winner');
+                this.modal = document.getElementById('winnerModal');
+                this.closeModal = document.getElementById('closeModal');
+                this.spinAgainBtn = document.getElementById('spinAgainBtn');
+                this.modalRestaurantName = document.getElementById('modalRestaurantName');
+                
+                this.currentRotation = 0;
+                this.isSpinning = false;
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.updateWheel();
+            }
+            
+            setupEventListeners() {
+                this.spinButton.addEventListener('click', () => this.spin());
+                this.closeModal.addEventListener('click', () => this.hideModal());
+                this.spinAgainBtn.addEventListener('click', () => {
+                    this.hideModal();
+                    this.spin();
+                });
+                
+                // Update wheel when inputs change
+                document.addEventListener('input', () => this.updateWheel());
+                
+                // Close modal when clicking outside
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal) {
+                        this.hideModal();
+                    }
+                });
+            }
+            
+            getSegments() {
+                const segmentItems = document.querySelectorAll('.segment-item');
+                return Array.from(segmentItems).map(item => {
+                    const textInput = item.querySelector('input[type="text"]');
+                    const colorInput = item.querySelector('.color-picker');
+                    return {
+                        text: textInput.value || 'Option',
+                        color: colorInput.value
+                    };
+                }).filter(segment => segment.text.trim() !== '');
+            }
+            
+            updateWheel() {
+                this.segments = this.getSegments();
+                if (this.segments.length > 0) {
+                    this.drawWheel();
+                }
+            }
+            
+            drawWheel() {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                const radius = Math.min(centerX, centerY) - 10;
+                
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                const anglePerSegment = (2 * Math.PI) / this.segments.length;
+                
+                this.segments.forEach((segment, index) => {
+                    const startAngle = index * anglePerSegment + this.currentRotation;
+                    const endAngle = startAngle + anglePerSegment;
+                    
+                    // Draw segment
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(centerX, centerY);
+                    this.ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                    this.ctx.closePath();
+                    this.ctx.fillStyle = segment.color;
+                    this.ctx.fill();
+                    
+                    // Draw border
+                    this.ctx.strokeStyle = '#fff';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.stroke();
+                    
+                    // Draw text
+                    this.ctx.save();
+                    this.ctx.translate(centerX, centerY);
+                    this.ctx.rotate(startAngle + anglePerSegment / 2);
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillStyle = '#fff';
+                    this.ctx.font = 'bold 14px Arial';
+                    
+                    // Truncate text if too long
+                    let text = segment.text;
+                    if (text.length > 10) {
+                        text = text.substring(0, 10) + '...';
+                    }
+                    this.ctx.fillText(text, radius / 2, 5);
+                    this.ctx.restore();
+                });
+                
+                // Draw center circle
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
+                this.ctx.fillStyle = '#fff';
+                this.ctx.fill();
+                this.ctx.strokeStyle = '#333';
+                this.ctx.lineWidth = 2;
+                this.ctx.stroke();
+            }
+            
+            spin() {
+                if (this.isSpinning || this.segments.length === 0) return;
+                
+                this.isSpinning = true;
+                this.spinButton.disabled = true;
+                this.result.classList.remove('show');
+                
+                const spinDuration = 3000 + Math.random() * 2000;
+                const totalRotation = (Math.PI * 2 * 5) + (Math.random() * Math.PI * 2);
+                const startTime = Date.now();
+                const startRotation = this.currentRotation;
+                
+                const animate = () => {
+                    const now = Date.now();
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / spinDuration, 1);
+                    
+                    // Easing function for smooth deceleration
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    this.currentRotation = startRotation + totalRotation * easeOut;
+                    
+                    this.drawWheel();
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        this.isSpinning = false;
+                        this.spinButton.disabled = false;
+                        this.showWinner();
+                    }
+                };
+                
+                animate();
+            }
+            
+            showWinner() {
+                const normalizedRotation = this.currentRotation % (2 * Math.PI);
+                const adjustedRotation = (2 * Math.PI - normalizedRotation + Math.PI / 2) % (2 * Math.PI);
+                const anglePerSegment = (2 * Math.PI) / this.segments.length;
+                const winningIndex = Math.floor(adjustedRotation / anglePerSegment);
+                const winner = this.segments[winningIndex];
+                
+                this.winner.textContent = winner.text;
+                this.modalRestaurantName.textContent = winner.text;
+                
+                this.result.classList.add('show');
+                setTimeout(() => {
+                    this.showModal();
+                }, 500);
+            }
+            
+            showModal() {
+                this.modal.classList.remove('hidden');
+                setTimeout(() => {
+                    this.modal.classList.add('show');
+                }, 10);
+            }
+            
+            hideModal() {
+                this.modal.classList.remove('show');
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                }, 300);
+            }
+        }
+        
+        function addSegment() {
+            const segmentsList = document.getElementById('segmentsList');
+            const segmentCount = segmentsList.children.length + 1;
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#FFB6C1'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            const segmentItem = document.createElement('div');
+            segmentItem.className = 'segment-item';
+            segmentItem.innerHTML = `
+                <input type="text" placeholder="Enter option" value="Option ${segmentCount}">
+                <input type="color" class="color-picker" value="${randomColor}">
+                <button class="remove-btn" onclick="removeSegment(this)">×</button>
+            `;
+            
+            segmentsList.appendChild(segmentItem);
+        }
+        
+        function removeSegment(button) {
+            const segmentItem = button.parentElement;
+            const segmentsList = document.getElementById('segmentsList');
+            
+            if (segmentsList.children.length > 2) {
+                segmentItem.remove();
+                window.customWheel.updateWheel();
+            }
+        }
+        
+        // Initialize the wheel when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.customWheel = new CustomWheel();
+        });
+    </script>
+</body>
+</html>
